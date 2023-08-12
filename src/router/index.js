@@ -1,11 +1,11 @@
-const newsRouter = require("./news");
 const siteRouter = require("./site");
+const movieRouter = require("./movie");
 
 function router(app) {
-    app.get("/", (req, res) => {
-        res.render("home");
-    });
-    app.use("/new", newsRouter);
+    // app.get("/", (req, res) => {
+    //     res.render("home");
+    // });
+    app.use("/movie", movieRouter);
     app.use("/", siteRouter);
 }
 
