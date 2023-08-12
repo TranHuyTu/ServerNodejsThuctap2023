@@ -1,3 +1,41 @@
 h1 {
     color: blue;
 }
+
+.card-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.card-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
+
+.card-detail {
+    width: 80%;
+    margin: 20px auto;
+    .card-img-top {
+        width: 34%;
+        float: left;
+        padding: 0px 56px;
+    }
+    .porter-card {
+        margin: 0 20%;
+        width: 60%;
+    }
+}
+
+.wrapper-comment {
+    border-color: #aaa;
+    border: 100px solid;
+    border-top: 10px solid;
+    border-bottom: 10px solid;
+    padding: 10px 20px;
+}

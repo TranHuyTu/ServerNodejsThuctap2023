@@ -1,0 +1,44 @@
+{{#each detail}}
+    {{#if this.backdrop_path}}
+        <div class="card-detail" style="width: 60%;">
+            <img
+                class="card-img-top"
+                src={{this.poster_path}}
+                alt={{this.poster_path}}
+            />
+            <div class="card-body">
+                <h5 class="card-title">{{this.original_title}}</h5>
+                <p>Genres : {{this.genre_ids}}</p>
+                <p>Languege : {{this.original_language}}</p>
+                <p>Release : {{this.release_date}}</p>
+                <p>Ratting : {{this.vote_average}}</p>
+                <p>Number Vote : {{this.vote_count}}</p>
+                <p>{{this.overview}}</p>
+                <p>Popularity : {{this.popularity}}</p>
+                <img
+                    class="porter-card"
+                    src={{this.backdrop_path}}
+                    alt={{this.backdrop_path}}
+                />
+            </div>
+        </div>
+    {{else}}
+    {{/if}}
+{{/each}}
+<div class="wrapper-comment">
+    {{#if comments}}
+        <ul class="list-group">
+            {{#each comments}}
+                <li class="list-group-item">
+                    <h5> Name : {{this.name}}</h5>
+                    <a> Email : {{this.email}}</a>
+                    <p>Derc : {{this.text}}</p>
+                    <p>Time : {{this.date}}</p>
+                </li>
+            {{/each}}
+        </ul>
+
+    {{else}}
+    {{/if}}
+</div>
+<a href="/movie" class="btn btn-primary" style="margin: 0 48%;">Back</a>

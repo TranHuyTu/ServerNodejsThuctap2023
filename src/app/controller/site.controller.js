@@ -1,7 +1,10 @@
-class site {
-    index(req, res) {
+const Movies = require("../module/Movie");
+const { mutipleMongooseToObjest } = require("../../util/mongoose");
+
+class home {
+    Show(req, res, next) {
         res.render("home");
     }
 }
 
-module.exports = new site();
+module.exports = new home();

@@ -1,7 +1,40 @@
 const Movies = require("../module/Movie");
-const { mutipleMongooseToObjest } = require("../../util/mongoose");
+const axios = require("axios");
+const {
+    MongooseToObject,
+    mutipleMongooseToObjest,
+} = require("../../util/mongoose");
 
 class movies {
+    movieDetail(req, res, next) {
+        // Lấy dữ liệu từ MongoDB bằng async/await
+        async function fetchData() {
+            try {
+                await Movies.findById({ _id: req.params.id })
+                    .then(async (detail) => {
+                        const response = await axios.post(
+                            "http://localhost:8080/comment/" + req.params.id,
+                        );
+                        const comments = response.data.comments;
+                        detail.backdrop_path =
+                            "https://image.tmdb.org/t/p/w500" +
+                            detail.backdrop_path;
+                        detail.poster_path =
+                            "https://image.tmdb.org/t/p/w500" +
+                            detail.poster_path;
+                        res.render("detail", { detail, comments });
+                        // res.send({ detail });
+                    })
+                    .catch(next); // Sử dụng phương thức find() để lấy tất cả tài liệu từ collection Users
+            } catch (error) {
+                res.status(500).json({ error: error.message }); // Xử lý lỗi nếu có
+            }
+        }
+
+        // Gọi hàm để thực hiện lấy dữ liệu
+        fetchData();
+    }
+
     listMovie(req, res, next) {
         // Lấy dữ liệu từ MongoDB bằng async/await
         async function fetchData() {
@@ -20,14 +53,15 @@ class movies {
         // Gọi hàm để thực hiện lấy dữ liệu
         fetchData();
     }
+
     Show(req, res, next) {
         // Lấy dữ liệu từ MongoDB bằng async/await
         async function fetchData() {
             try {
                 await Movies.find({})
-                    .then((comments) => {
-                        comments = mutipleMongooseToObjest(comments);
-                        comments.map((value) => {
+                    .then((movie) => {
+                        movie = mutipleMongooseToObjest(movie);
+                        movie.map((value) => {
                             value.backdrop_path =
                                 "https://image.tmdb.org/t/p/w500" +
                                 value.backdrop_path;
@@ -35,7 +69,7 @@ class movies {
                                 "https://image.tmdb.org/t/p/w500" +
                                 value.poster_path;
                         });
-                        res.render("news", { comments });
+                        res.render("news", { movie });
                     })
                     .catch(next); // Sử dụng phương thức find() để lấy tất cả tài liệu từ collection Users
             } catch (error) {

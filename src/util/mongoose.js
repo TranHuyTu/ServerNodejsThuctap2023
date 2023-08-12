@@ -1,8 +1,8 @@
 module.exports = {
-    mutipleMongooseToObjest: function(mongoose) {
+    mutipleMongooseToObjest: function (mongoose) {
         return mongoose.slice(0, 20).map((comment) => comment.toObject());
     },
-    MongooseToObject: function(mongoose) {
+    MongooseToObject: function (mongoose) {
         return mongoose ? mongoose.toObject : mongoose;
     },
 };

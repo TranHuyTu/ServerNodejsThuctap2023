@@ -5,7 +5,7 @@
 "
 >
     <div class="row">
-        {{#each comments}}
+        {{#each movie}}
             <div class="card" style="width: 20rem;">
                 <img
                     class="card-img-top"
@@ -15,7 +15,8 @@
                 <div class="card-body">
                     <h5 class="card-title">{{this.original_title}}</h5>
                     <p class="card-text">{{this.overview}}</p>
-                    <a href="#" class="btn btn-primary">Mua ve</a>
+                    <a href="/movie/{{this._id}}" class="btn btn-primary">Chi
+                        tiết</a>
                 </div>
             </div>
         {{/each}}
