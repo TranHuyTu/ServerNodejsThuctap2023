@@ -13,7 +13,8 @@ class movies {
                 await Movies.findById({ _id: req.params.id })
                     .then(async (detail) => {
                         const response = await axios.post(
-                            "http://localhost:8080/comment/" + req.params.id,
+                            "https://demowebdeploy.onrender.com/comment/" +
+                                req.params.id,
                         );
                         const comments = response.data.comments;
                         detail.backdrop_path =
