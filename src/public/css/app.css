@@ -32,3 +32,38 @@ h1 {
   border-top: 10px solid;
   border-bottom: 10px solid;
   padding: 10px 20px; }
+  .wrapper-comment .info-user {
+    display: inline-block;
+    margin: 5px; }
+    .wrapper-comment .info-user h5 {
+      color: #050505;
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 500; }
+    .wrapper-comment .info-user a {
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 500;
+      color: #aaa; }
+  .wrapper-comment .date {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: #aaa; }
+
+.wrapper-btn {
+  margin: 0 20px; }
+  .wrapper-btn .update-comment,
+  .wrapper-btn .delete-comment {
+    font-size: 12px;
+    line-height: 1.4;
+    background-color: transparent;
+    color: #4f4fec;
+    font-weight: 600;
+    border: 0px;
+    transition: all 0.5s; }
+    .wrapper-btn .update-comment:hover,
+    .wrapper-btn .delete-comment:hover {
+      font-size: 14px;
+      padding: 1px 7px;
+      color: blue; }

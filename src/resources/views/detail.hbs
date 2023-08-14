@@ -30,10 +30,24 @@
         <ul class="list-group">
             {{#each comments}}
                 <li class="list-group-item">
-                    <h5> Name : {{this.name}}</h5>
-                    <a> Email : {{this.email}}</a>
-                    <p>Derc : {{this.text}}</p>
-                    <p>Time : {{this.date}}</p>
+                    <div class="info-user">
+                        <h5>{{this.name}}</h5>
+                        <a href="#">{{this.email}}</a>
+                    </div>
+                    <p>&emsp;{{this.text}}</p>
+                    <p class="date">datetime : {{this.date}}</p>
+                    <div class="wrapper-btn">
+                        <a
+                            href="/"
+                            class="btn btn-primary update-comment"
+                            style=""
+                        >Chỉnh Sửa</a>
+                        <a
+                            href="/"
+                            class="btn btn-primary delete-comment"
+                            style=""
+                        >Xóa</a>
+                    </div>
                 </li>
             {{/each}}
         </ul>
