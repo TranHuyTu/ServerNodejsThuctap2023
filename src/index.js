@@ -1,15 +1,17 @@
 const path = require("path");
 const express = require("express");
+const session = require("express-session");
 const handlebars = require("express-handlebars");
+const rateLimit = require("express-rate-limit");
+const helmet = require("helmet");
+const compression = require("compression");
 const morgan = require("morgan");
 const app = express();
 const db = require("./config/db");
 const router = require("./router");
-const axios = require("axios");
 
 require("dotenv").config();
 var bodyParser = require("body-parser");
-const _AuthMiddleware = require("./common/_AuthMiddleWare");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -40,7 +42,25 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Gửi yêu cầu để lấy thông tin cấu hình TMDb
+// Sử dụng express-rate-limit middleware
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // Thời gian cửa sổ (15 phút)
+    max: 150, // Số yêu cầu tối đa trong mỗi cửa sổ
+});
+
+app.use(limiter);
+
+// Sử dụng compression middleware
+app.use(compression());
+
+// Sử dụng express-session middleware
+app.use(
+    session({
+        secret: "your-secret-key", // Khóa bí mật để ký phiên
+        resave: false, // Không lưu lại phiên mỗi lần yêu cầu
+        saveUninitialized: true, // Lưu phiên chưa được khởi tạo
+    }),
+);
 
 //connestDB
 db.connect();
@@ -58,6 +78,20 @@ app.engine(
 
 app.set("view engine", "hbs");
 app.set("views", path.join(__dirname, "resources", "views"));
+
+// Sử dụng helmet.contentSecurityPolicy() middleware
+app.use(helmet());
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: ["'self'"],
+            defaultSrc: ["'self'", "localhost:8080"],
+            imgSrc: ["'self'", "image.tmdb.org", "th.bing.com"],
+            scriptSrc: ["'self'", "cdn.jsdelivr.net", "code.jquery.com"],
+            // Các hạn chế khác ở đây
+        },
+    }),
+);
 
 router(app);
 

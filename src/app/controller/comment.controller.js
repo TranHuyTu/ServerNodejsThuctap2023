@@ -45,7 +45,6 @@ class comment {
         // Lấy dữ liệu từ MongoDB bằng async/await
         async function fetchData() {
             try {
-                console.log(req.body);
                 const newComment = new Comments({
                     name: req.body.name,
                     email: req.body.email,
@@ -65,8 +64,62 @@ class comment {
         // Gọi hàm để thực hiện lấy dữ liệu
         fetchData();
     }
-    updateOneCommentById(req, res, next) {}
-    deleteOneCommentById(req, res, next) {}
+    updateOneCommentById(req, res, next) {
+        // Lấy dữ liệu từ MongoDB bằng async/await
+        async function fetchData() {
+            try {
+                const newComment = {
+                    name: req.body.name,
+                    email: req.body.email,
+                    movie_id: mongoose.Types.ObjectId.createFromHexString(
+                        req.body.movie_id,
+                    ),
+                    text: req.body.text,
+                    date: req.body.date,
+                };
+                const updatedComment = await Comments.updateOne(
+                    {
+                        _id: mongoose.Types.ObjectId.createFromHexString(
+                            req.params.id,
+                        ),
+                    },
+                    newComment,
+                    { new: true },
+                );
+                res.send(updatedComment);
+            } catch (error) {
+                res.status(500).json({ error: error.message }); // Xử lý lỗi nếu có
+            }
+        }
+
+        // Gọi hàm để thực hiện lấy dữ liệu
+        fetchData();
+    }
+    deleteOneCommentById(req, res, next) {
+        // Lấy dữ liệu từ MongoDB bằng async/await
+        async function fetchData() {
+            try {
+                const result = await Comments.deleteOne({
+                    _id: mongoose.Types.ObjectId.createFromHexString(
+                        req.params.id,
+                    ),
+                });
+                if (result.deletedCount === 1) {
+                    console.log(result);
+                    res.send({ result: "Successfully deleted one document." });
+                } else {
+                    res.send({
+                        result: "No documents matched the query. Deleted 0 documents.",
+                    });
+                }
+            } catch (error) {
+                res.status(500).json({ error: error.message }); // Xử lý lỗi nếu có
+            }
+        }
+
+        // Gọi hàm để thực hiện lấy dữ liệu
+        fetchData();
+    }
 }
 
 module.exports = new comment();

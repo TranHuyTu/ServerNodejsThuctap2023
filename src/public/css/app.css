@@ -67,3 +67,10 @@ h1 {
       font-size: 14px;
       padding: 1px 7px;
       color: blue; }
+
+.btn-back {
+  position: fixed;
+  top: 10vh;
+  right: 1%;
+  width: 100px;
+  font-weight: 500; }
