@@ -11,8 +11,8 @@ function router(app) {
     app.use("/login", loginRouter);
     app.use("/movie", movieRouter);
     app.use("/", siteRouter);
-    app.use(_AuthMiddleware.isAuth);
     app.use("/comment", commentRouter);
+    app.use(_AuthMiddleware.isAuth);
 }
 
 module.exports = router;
