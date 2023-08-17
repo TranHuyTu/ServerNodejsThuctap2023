@@ -105,7 +105,6 @@ class comment {
                     ),
                 });
                 if (result.deletedCount === 1) {
-                    console.log(result);
                     res.send({ result: "Successfully deleted one document." });
                 } else {
                     res.send({
