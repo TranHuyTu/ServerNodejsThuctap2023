@@ -1,3 +1,5 @@
+const https = require("https");
+const fs = require("fs");
 const path = require("path");
 const express = require("express");
 const session = require("express-session");
@@ -9,6 +11,16 @@ const morgan = require("morgan");
 const app = express();
 const db = require("./config/db");
 const router = require("./router");
+
+// Cài đặt các tùy chọn SSL
+// const options = {
+//     key: fs.readFileSync("path/to/private-key.pem"), // Path to private key file
+//     cert: fs.readFileSync("path/to/certificate.pem"), // Path to certificate file
+//     passphrase: "your-passphrase", // Passphrase for the private key (if applicable)
+//     ca: [fs.readFileSync("path/to/ca-cert.pem")], // An array of certificate authority certificates
+//     requestCert: true, // Request client certificates
+//     rejectUnauthorized: true, // Reject connections if client's certificate is invalid
+// };
 
 require("dotenv").config();
 var bodyParser = require("body-parser");
@@ -95,6 +107,87 @@ app.use(
 
 router(app);
 
-app.listen(port, () => {
-    console.log(`App listening on port ${port}`);
-});
+// Tạo máy chủ HTTPS
+// const server = https.createServer(options, app);
+
+// app.listen(port, () => {
+//     console.log(`App listening on port ${port}`);
+// });
+
+// const cluster = require("node:cluster");
+// const http = require("node:http");
+// const numCPUs = require("node:os").availableParallelism();
+
+// if (cluster.isPrimary) {
+//     // console.log(`Primary ${process.pid} is running`);
+
+//     // // Fork workers.
+//     // for (let i = 0; i < numCPUs; i++) {
+//     //     cluster.fork();
+//     // }
+
+//     // // Lắng nghe sự kiện fork
+//     // cluster.on("fork", (worker) => {
+//     //     console.log(`Worker ${worker.process.pid} đã được tạo.`);
+//     // });
+
+//     // cluster.on("online", (worker) => {
+//     //     console.log(`Worker ${worker.process.pid} đã online.`);
+//     // });
+
+//     // cluster.on("exit", (worker, code, signal) => {
+//     //     console.log(`worker ${worker.process.pid} died`);
+//     // });
+
+//     // ...
+
+//     const worker = cluster.fork();
+
+//     // Gửi dữ liệu tới worker process
+//     worker.send({ message: "Hello from master!" });
+
+//     // Lắng nghe dữ liệu từ worker process
+//     worker.on("message", (msg) => {
+//         console.log(`Master đã nhận được thông điệp từ worker: ${msg.message}`);
+//     });
+// } else {
+//     process.on("message", (msg) => {
+//         console.log(`Worker đã nhận được thông điệp từ master: ${msg.message}`);
+//         // Phản hồi với thông điệp
+//         process.send({ message: "Hello from worker!" });
+//     });
+
+//     console.log(`Worker ${process.pid} started`);
+// }
+
+const cluster = require("cluster");
+const numCPUs = require("os").cpus().length;
+
+if (cluster.isMaster) {
+    // Fork workers for each CPU
+    for (let i = 0; i < numCPUs; i++) {
+        cluster.fork();
+    }
+
+    cluster.on("exit", (worker, code, signal) => {
+        console.log(`Worker ${worker.process.pid} died`);
+    });
+
+    // Lắng nghe tin nhắn từ worker process
+    cluster.on("message", (worker, message) => {
+        console.log(
+            `Master received message from Worker ${worker.id}: ${message}`,
+        );
+    });
+
+    // Gửi yêu cầu tới worker process
+    Object.values(cluster.workers).forEach((worker) => {
+        worker.send("Please handle this request");
+    });
+} else {
+    // Workers can share any TCP connection
+    // In this case it is an HTTP server
+    app.listen(port, () => {
+        console.log(`App listening on port ${port} worker ${process.pid}`);
+    });
+}
