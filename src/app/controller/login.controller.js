@@ -25,7 +25,6 @@ class login {
                             }
                             if (result) {
                                 var _token = await JWT.make(user[0]);
-                                console.log(_token);
                                 res.send({ token_login: _token });
                             } else {
                                 res.send("Password does not match");

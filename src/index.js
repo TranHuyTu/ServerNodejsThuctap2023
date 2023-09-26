@@ -1,5 +1,3 @@
-const https = require("https");
-const fs = require("fs");
 const path = require("path");
 const express = require("express");
 const session = require("express-session");
@@ -93,6 +91,7 @@ app.set("views", path.join(__dirname, "resources", "views"));
 
 // Sử dụng helmet.contentSecurityPolicy() middleware
 app.use(helmet());
+
 app.use(
     helmet.contentSecurityPolicy({
         directives: {
@@ -106,59 +105,6 @@ app.use(
 );
 
 router(app);
-
-// Tạo máy chủ HTTPS
-// const server = https.createServer(options, app);
-
-// app.listen(port, () => {
-//     console.log(`App listening on port ${port}`);
-// });
-
-// const cluster = require("node:cluster");
-// const http = require("node:http");
-// const numCPUs = require("node:os").availableParallelism();
-
-// if (cluster.isPrimary) {
-//     // console.log(`Primary ${process.pid} is running`);
-
-//     // // Fork workers.
-//     // for (let i = 0; i < numCPUs; i++) {
-//     //     cluster.fork();
-//     // }
-
-//     // // Lắng nghe sự kiện fork
-//     // cluster.on("fork", (worker) => {
-//     //     console.log(`Worker ${worker.process.pid} đã được tạo.`);
-//     // });
-
-//     // cluster.on("online", (worker) => {
-//     //     console.log(`Worker ${worker.process.pid} đã online.`);
-//     // });
-
-//     // cluster.on("exit", (worker, code, signal) => {
-//     //     console.log(`worker ${worker.process.pid} died`);
-//     // });
-
-//     // ...
-
-//     const worker = cluster.fork();
-
-//     // Gửi dữ liệu tới worker process
-//     worker.send({ message: "Hello from master!" });
-
-//     // Lắng nghe dữ liệu từ worker process
-//     worker.on("message", (msg) => {
-//         console.log(`Master đã nhận được thông điệp từ worker: ${msg.message}`);
-//     });
-// } else {
-//     process.on("message", (msg) => {
-//         console.log(`Worker đã nhận được thông điệp từ master: ${msg.message}`);
-//         // Phản hồi với thông điệp
-//         process.send({ message: "Hello from worker!" });
-//     });
-
-//     console.log(`Worker ${process.pid} started`);
-// }
 
 const cluster = require("cluster");
 const numCPUs = require("os").cpus().length;
@@ -191,3 +137,125 @@ if (cluster.isMaster) {
         console.log(`App listening on port ${port} worker ${process.pid}`);
     });
 }
+
+// const util = require("node:util");
+// const execFile = util.promisify(require("node:child_process").execFile);
+// const ex = require("./example");
+
+// async function getVersion() {
+//     const { stdout } = await execFile("node", ex, (error, stdout, stderr) => {
+//         if (error) {
+//             console.error(`Lỗi: ${error.message}`);
+//             return;
+//         }
+//         if (stderr) {
+//             console.error(`Lỗi chuẩn: ${stderr}`);
+//             return;
+//         }
+//         const fileContent = stdout;
+//         console.log(`Nội dung của file: ${fileContent}`);
+//     });
+//     console.log(stdout);
+// }
+// getVersion();
+
+// const {
+//     Worker,
+//     isMainThread,
+//     parentPort,
+//     workerData,
+// } = require("worker_threads");
+
+// if (isMainThread) {
+//     // Chạy trong luồng chính
+//     const someData = {
+//         /* dữ liệu bạn muốn chia sẻ với worker */
+//     };
+
+//     // Tạo một worker mới và truyền dữ liệu vào
+//     const worker = new Worker(__filename, {
+//         workerData: someData,
+//     });
+
+//     // Lắng nghe sự kiện message từ worker
+//     worker.on("message", (result) => {
+//         console.log("Kết quả từ worker:", result);
+//     });
+
+//     // Gửi dữ liệu từ luồng chính đến worker
+//     worker.postMessage({
+//         /* dữ liệu bạn muốn gửi cho worker */
+//     });
+// } else {
+//     // Chạy trong luồng worker
+//     parentPort.on("message", (data) => {
+//         // Xử lý tính toán lớn ở đây, sử dụng dữ liệu từ parentPort
+//         // const result = performHeavyComputation(data);
+
+//         // Gửi kết quả trở lại luồng chính
+//         // parentPort.postMessage(result);
+
+//         setInterval(() => {
+//             const result = performHeavyComputation(data);
+//             parentPort.postMessage(result);
+//         }, 20000);
+//     });
+// }
+
+// function performHeavyComputation(data) {
+//     function fibonacciIterative(n) {
+//         if (n <= 1) {
+//             return n;
+//         } else {
+//             let fib = [0, 1];
+//             for (let i = 2; i <= n; i++) {
+//                 fib[i] = fib[i - 1] + fib[i - 2];
+//             }
+//             return fib[n];
+//         }
+//     }
+
+//     const n = parseInt(Math.random() * 1000); // Số Fibonacci bạn muốn tính
+//     const result = fibonacciIterative(n);
+//     return result;
+// }
+
+// const { StaticPool } = require("node-worker-threads-pool");
+
+// const filePath = "./src/worker.js";
+
+// const pool = new StaticPool({
+//     size: 4,
+//     task: filePath,
+//     workerData: "workerData!",
+// });
+
+// for (let i = 0; i < 20; i++) {
+//     (async() => {
+//         const num = 40 + Math.trunc(10 * Math.random());
+
+//         // Khởi chạy một tác vụ bằng cách sử dụng StaticTaskExecutor
+//         const taskExecutor = pool.createExecutor();
+
+//         taskExecutor
+//             .setTimeout(1000000)
+//             .exec(num)
+//             .then((result) => {
+//                 console.log(`Fibonacci(${num}) result:`, result);
+//                 // taskExecutor.destroy(); // Đừng quên phải hủy executor khi đã hoàn thành
+//                 // pool.destroy(); // Hủy pool khi bạn không cần nữa
+//             })
+//             .catch((error) => {
+//                 console.error("Lỗi:", error);
+//                 taskExecutor.destroy();
+//                 pool.destroy();
+//             });
+
+//         // This will choose one idle worker in the pool
+//         // to execute your heavy task without blocking
+//         // the main thread!
+//         // const res = await pool.exec(num);
+
+//         // console.log(`Fibonacci(${num}) result:`, res);
+//     })();
+// }
