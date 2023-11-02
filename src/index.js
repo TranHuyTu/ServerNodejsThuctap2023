@@ -90,7 +90,7 @@ app.set("view engine", "hbs");
 app.set("views", path.join(__dirname, "resources", "views"));
 
 // Sử dụng helmet.contentSecurityPolicy() middleware
-app.use(helmet());
+// app.use(helmet());
 
 // app.use(
 //     helmet.contentSecurityPolicy({
