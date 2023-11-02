@@ -3,7 +3,7 @@ const express = require("express");
 const session = require("express-session");
 const handlebars = require("express-handlebars");
 const rateLimit = require("express-rate-limit");
-const helmet = require("helmet");
+// const helmet = require("helmet");
 const compression = require("compression");
 const morgan = require("morgan");
 const app = express();
@@ -92,51 +92,55 @@ app.set("views", path.join(__dirname, "resources", "views"));
 // Sử dụng helmet.contentSecurityPolicy() middleware
 app.use(helmet());
 
-app.use(
-    helmet.contentSecurityPolicy({
-        directives: {
-            defaultSrc: ["'self'"],
-            defaultSrc: ["'self'", "localhost:8080"],
-            imgSrc: ["'self'", "image.tmdb.org", "th.bing.com"],
-            scriptSrc: ["'self'", "cdn.jsdelivr.net", "code.jquery.com"],
-            // Các hạn chế khác ở đây
-        },
-    }),
-);
+// app.use(
+//     helmet.contentSecurityPolicy({
+//         directives: {
+//             defaultSrc: ["'self'"],
+//             defaultSrc: ["'self'", "localhost:8080"],
+//             imgSrc: ["'self'", "image.tmdb.org", "th.bing.com"],
+//             scriptSrc: ["'self'", "cdn.jsdelivr.net", "code.jquery.com"],
+//             // Các hạn chế khác ở đây
+//         },
+//     }),
+// );
 
 router(app);
 
-const cluster = require("cluster");
-const numCPUs = require("os").cpus().length;
+app.listen(port, () => {
+    console.log(`App listening on port ${port}`);
+});
 
-if (cluster.isMaster) {
-    // Fork workers for each CPU
-    for (let i = 0; i < numCPUs; i++) {
-        cluster.fork();
-    }
+// const cluster = require("cluster");
+// const numCPUs = require("os").cpus().length;
 
-    cluster.on("exit", (worker, code, signal) => {
-        console.log(`Worker ${worker.process.pid} died`);
-    });
+// if (cluster.isMaster) {
+//     // Fork workers for each CPU
+//     for (let i = 0; i < numCPUs; i++) {
+//         cluster.fork();
+//     }
 
-    // Lắng nghe tin nhắn từ worker process
-    cluster.on("message", (worker, message) => {
-        console.log(
-            `Master received message from Worker ${worker.id}: ${message}`,
-        );
-    });
+//     cluster.on("exit", (worker, code, signal) => {
+//         console.log(`Worker ${worker.process.pid} died`);
+//     });
 
-    // Gửi yêu cầu tới worker process
-    Object.values(cluster.workers).forEach((worker) => {
-        worker.send("Please handle this request");
-    });
-} else {
-    // Workers can share any TCP connection
-    // In this case it is an HTTP server
-    app.listen(port, () => {
-        console.log(`App listening on port ${port} worker ${process.pid}`);
-    });
-}
+//     // Lắng nghe tin nhắn từ worker process
+//     cluster.on("message", (worker, message) => {
+//         console.log(
+//             `Master received message from Worker ${worker.id}: ${message}`,
+//         );
+//     });
+
+//     // Gửi yêu cầu tới worker process
+//     Object.values(cluster.workers).forEach((worker) => {
+//         worker.send("Please handle this request");
+//     });
+// } else {
+//     // Workers can share any TCP connection
+//     // In this case it is an HTTP server
+//     app.listen(port, () => {
+//         console.log(`App listening on port ${port} worker ${process.pid}`);
+//     });
+// }
 
 // const util = require("node:util");
 // const execFile = util.promisify(require("node:child_process").execFile);
