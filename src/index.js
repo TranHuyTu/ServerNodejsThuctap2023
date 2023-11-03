@@ -35,8 +35,8 @@ const port = process.env.PORT || 8090;
 //     optionSuccessStatus: 200,
 // };
 
-app.use(cors(corsOptions)); // Use this after the variable declaration
-app.use(function (req, res, next) {
+// app.use(cors(corsOptions)); // Use this after the variable declaration
+app.use(function(req, res, next) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
         "Access-Control-Allow-Methods",
@@ -115,7 +115,7 @@ const redis = new Redis({
 // Sử dụng Redis làm lưu trữ session
 app.use(
     session({
-        store: new (require("connect-redis")(session))({ client: redis }),
+        store: new(require("connect-redis")(session))({ client: redis }),
         secret: "Ramos04", // Thay thế bằng khóa bí mật của bạn
         resave: false,
         saveUninitialized: true,
