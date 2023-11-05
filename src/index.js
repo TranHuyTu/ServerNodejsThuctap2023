@@ -36,7 +36,7 @@ const port = process.env.PORT || 8090;
 // };
 
 // app.use(cors(corsOptions)); // Use this after the variable declaration
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
         "Access-Control-Allow-Methods",
@@ -56,7 +56,7 @@ app.use(express.json());
 // Sử dụng express-rate-limit middleware
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // Thời gian cửa sổ (15 phút)
-    max: 150, // Số yêu cầu tối đa trong mỗi cửa sổ
+    max: 1500, // Số yêu cầu tối đa trong mỗi cửa sổ
 });
 
 app.use(limiter);
@@ -67,7 +67,7 @@ app.use(compression());
 // Sử dụng express-session middleware
 app.use(
     session({
-        secret: "your-secret-key", // Khóa bí mật để ký phiên
+        secret: "TTD", // Khóa bí mật để ký phiên
         resave: false, // Không lưu lại phiên mỗi lần yêu cầu
         saveUninitialized: true, // Lưu phiên chưa được khởi tạo
     }),
@@ -115,7 +115,7 @@ const redis = new Redis({
 // Sử dụng Redis làm lưu trữ session
 app.use(
     session({
-        store: new(require("connect-redis")(session))({ client: redis }),
+        store: new (require("connect-redis")(session))({ client: redis }),
         secret: "Ramos04", // Thay thế bằng khóa bí mật của bạn
         resave: false,
         saveUninitialized: true,
