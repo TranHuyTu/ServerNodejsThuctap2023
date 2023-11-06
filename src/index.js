@@ -11,16 +11,6 @@ const app = express();
 const db = require("./config/db");
 const router = require("./router");
 
-// Cài đặt các tùy chọn SSL
-// const options = {
-//     key: fs.readFileSync("path/to/private-key.pem"), // Path to private key file
-//     cert: fs.readFileSync("path/to/certificate.pem"), // Path to certificate file
-//     passphrase: "your-passphrase", // Passphrase for the private key (if applicable)
-//     ca: [fs.readFileSync("path/to/ca-cert.pem")], // An array of certificate authority certificates
-//     requestCert: true, // Request client certificates
-//     rejectUnauthorized: true, // Reject connections if client's certificate is invalid
-// };
-
 require("dotenv").config();
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -28,14 +18,9 @@ app.use(bodyParser.json());
 
 const port = process.env.PORT || 8090;
 
-// const cors = require("cors");
-// const corsOptions = {
-//     origin: "*",
-//     credentials: true, //access-control-allow-credentials:true
-//     optionSuccessStatus: 200,
-// };
+const cors = require("cors");
+app.use(cors());
 
-// app.use(cors(corsOptions)); // Use this after the variable declaration
 app.use(function (req, res, next) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(

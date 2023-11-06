@@ -1,36 +1,26 @@
 const cloudinary = require("cloudinary").v2;
 
 exports.uploadImg = function (req, res) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader(
-        "Access-Control-Allow-Methods",
-        "GET, POST, OPTIONS, PUT, PATCH, DELETE",
-    );
-    res.setHeader(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept",
-    );
-    res.setHeader("Access-Control-Allow-Credentials", true);
-    next();
     try {
-        const fileData = req.file;
-        return res.status(200).json(fileData.path);
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader(
+            "Access-Control-Allow-Methods",
+            "OPTIONS, GET, POST, PUT, PATCH, DELETE",
+        );
+        res.setHeader(
+            "Access-Control-Allow-Headers",
+            "Content-Type, Authorization",
+        );
+        if (req.file) {
+            const fileData = req.file;
+            return res.status(200).json(fileData.path);
+        }
+        next();
     } catch (error) {
         return interalServerError(error);
     }
 };
 exports.deleteImg = function (req, res) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader(
-        "Access-Control-Allow-Methods",
-        "GET, POST, OPTIONS, PUT, PATCH, DELETE",
-    );
-    res.setHeader(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept",
-    );
-    res.setHeader("Access-Control-Allow-Credentials", true);
-    next();
     var data = req.body;
     // console.log(cloudinary.url(data.url));
     // Xoa 1 file
