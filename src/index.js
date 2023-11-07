@@ -10,11 +10,19 @@ const morgan = require("morgan");
 const app = express();
 const db = require("./config/db");
 const router = require("./router");
+const fileUpload = require("express-fileupload");
 
 require("dotenv").config();
+
 var bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+
+app.use(bodyParser.json({ limit: "100mb" }));
+app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
+
+// app.use(fileUpload({ useTempFiles: true }));
+
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
 
 const port = process.env.PORT || 8090;
 
