@@ -70,47 +70,4 @@ exports.UploadVideoControllers = async function uploadVideo(req, res) {
                 // Xử lý lỗi tải lên tại đây
             });
     });
-
-    // // const allowedFormats = ["jpg", "jpeg", "png", "gif"];
-    // const upload_preset = "ske802vb"; // Thay bằng upload preset của bạn
-    // const options = {
-    //     folder: "Image", // Thay đổi đường dẫn nếu cần
-    //     resource_type: "auto",
-    // };
-    // cloudinary.uploader
-    //     .unsigned_upload(file, upload_preset, options)
-    //     .then((result) => {
-    //         console.log(result);
-    //         // Xử lý kết quả tải lên tại đây
-    //         res.json({
-    //             url: result.secure_url,
-    //             message: "succes",
-    //         });
-    //     })
-    //     .catch((error) => {
-    //         console.error(error);
-    //         // Xử lý lỗi tải lên tại đây
-    //     });
-
-    // await cloudinary.uploader.upload(
-    //     file,
-    //     {
-    //         resource_type: "video",
-    //         chunk_size: "100mb",
-    //         public_id: `video/${random}`,
-    //     },
-    //     function (error, result) {
-    //         if (error) {
-    //             res.json({
-    //                 error: error,
-    //             });
-    //         } else {
-    //             res.json({
-    //                 public_id: result.public_id,
-    //                 url: result.url,
-    //                 message: "succes",
-    //             });
-    //         }
-    //     },
-    // );
 };

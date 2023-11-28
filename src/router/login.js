@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const moviesController = require("../app/controller/login.controller");
+const loginController = require("../app/controller/login.controller");
 
-router.post("/decoded", moviesController.Decoded);
-router.post("/register", moviesController.Register);
-router.put("/update/:id", moviesController.UpdateUser);
-router.post("/", moviesController.Login);
+router.get("/form", loginController.Show);
+router.post("/decoded", loginController.Decoded);
+router.post("/register", loginController.Register);
+router.put("/update/:id", loginController.UpdateUser);
+router.post("/", loginController.Login);
 
 module.exports = router;

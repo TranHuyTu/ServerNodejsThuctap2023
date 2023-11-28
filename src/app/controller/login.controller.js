@@ -140,6 +140,9 @@ class login {
         // Gọi hàm để thực hiện lấy dữ liệu
         fetchData();
     }
+    Show(req, res, next) {
+        res.render("login", { layout: "login" });
+    }
 }
 
 module.exports = new login();

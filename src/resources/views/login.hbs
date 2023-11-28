@@ -1,0 +1,81 @@
+<div class="wrapper-login">
+    <div class="main">
+        <input type="checkbox" id="chk" aria-hidden="true" />
+
+        <div class="signup">
+            <form id="signupForm">
+                <label for="chk" aria-hidden="true">Sign up</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="User name"
+                    required=""
+                />
+                <input
+                    type="email"
+                    id="email_dk"
+                    name="email"
+                    placeholder="Email"
+                    required=""
+                />
+                <input
+                    type="password"
+                    id="password_dk"
+                    name="pswd"
+                    placeholder="Password"
+                    required=""
+                />
+                <button type="submit" onclick="signupForm()">Sign up</button>
+            </form>
+        </div>
+        <p class="warn">Đăng kí thành công</p>
+        <div class="login">
+            <form id="loginForm">
+                <label for="chk" aria-hidden="true">Login</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Email"
+                    required=""
+                />
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Password"
+                    required=""
+                />
+                <button type="submit" onclick="loginForm()">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    document .getElementById("signupForm") .addEventListener("submit", function
+    (event) { event.preventDefault(); }); document .getElementById("loginForm")
+    .addEventListener("submit", function (event) { event.preventDefault(); });
+    var warn = document.querySelector(".warn"); function signupForm() { const
+    name = document.getElementById("username").value; const email =
+    document.getElementById("email_dk").value; const password =
+    document.getElementById("password_dk").value; if (email && password &&
+    username) { signup(name, email, password); } } function loginForm() { const
+    email = document.getElementById("email").value; const password =
+    document.getElementById("password").value; if (email && password) {
+    login(email, password); } } function signup(name, email, password) {
+    fetch("https://serverltmnc.onrender.com/login/register", { method: "POST",
+    headers: { "Content-Type": "application/json", }, body: JSON.stringify({
+    name, email, password }), }) .then((response) => { if (response.status ===
+    200) { warn.style.display = "block"; } else { // Handle login failure (e.g.,
+    display an error message) console.error("Login failed"); } }) .catch((error)
+    => { console.error("Error:", error); }); } function login(email, password) {
+    fetch("https://serverltmnc.onrender.com/login", { method: "POST", headers: {
+    "Content-Type": "application/json", }, body: JSON.stringify({ email,
+    password }), }) .then((response) => { if (response.status === 200) {
+    response .json() .then((data) => { sessionStorage.setItem("token",
+    data.token_login); window.location.href = "/"; }) .catch((error) => {
+    console.error("Error:", error); }); } else { // Handle login failure (e.g.,
+    display an error message) console.error("Login failed"); } }) .catch((error)
+    => { console.error("Error:", error); }); }
+</script>
