@@ -113,6 +113,55 @@ class movies {
             fetchData();
         }
     }
+    async createNewMovie(req, res, next) {
+        // Lấy dữ liệu từ MongoDB bằng async/await
+        try {
+            const Movie = await Movies.create(req.body);
+            res.status(200).send(Movie);
+        } catch (error) {
+            res.status(500).json({ error: error.message }); // Xử lý lỗi nếu có
+        }
+    }
+    updateOneMovieById(req, res, next) {
+        // Lấy dữ liệu từ MongoDB bằng async/await
+        async function fetchData() {
+            try {
+                const updatedMovie = await Movies.findByIdAndUpdate(
+                    req.params.id,
+                    req.body,
+                    { new: true },
+                );
+                res.send(updatedMovie);
+            } catch (error) {
+                res.status(500).json({ error: error.message }); // Xử lý lỗi nếu có
+            }
+        }
+
+        // Gọi hàm để thực hiện lấy dữ liệu
+        fetchData();
+    }
+    deleteOneMovieById(req, res, next) {
+        // Lấy dữ liệu từ MongoDB bằng async/await
+        async function fetchData() {
+            try {
+                const result = await Movies.findByIdAndDelete(req.params.id);
+                if (result) {
+                    res.status(200).send({
+                        result: "Successfully deleted one document.",
+                    });
+                } else {
+                    res.status(200).send({
+                        result: "No documents matched the query. Deleted 0 documents.",
+                    });
+                }
+            } catch (error) {
+                res.status(500).json({ error: error.message }); // Xử lý lỗi nếu có
+            }
+        }
+
+        // Gọi hàm để thực hiện lấy dữ liệu
+        fetchData();
+    }
 }
 
 module.exports = new movies();

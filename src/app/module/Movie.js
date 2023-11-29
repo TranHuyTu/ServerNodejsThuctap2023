@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const Movie = new Schema({
-    _id: Schema.Types.ObjectId,
+    // _id: Schema.Types.ObjectId,
     adult: { type: Boolean },
     backdrop_path: { type: String },
     genre_ids: { type: Array, of: Number },
@@ -19,4 +19,4 @@ const Movie = new Schema({
     vote_count: { typeof: Number },
 });
 
-module.exports = mongoose.model("listmovie", Movie);
+module.exports = mongoose.model("listmovies", Movie);
