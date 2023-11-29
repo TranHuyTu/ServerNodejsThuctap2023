@@ -25,9 +25,11 @@ class login {
                             }
                             if (result) {
                                 var _token = await JWT.make(user[0]);
-                                res.send({ token_login: _token });
+                                res.status(200).send({ token_login: _token });
                             } else {
-                                res.send("Password does not match");
+                                res.status(401).send({
+                                    login_false: "Password does not match",
+                                });
                             }
                         },
                     );
@@ -47,9 +49,15 @@ class login {
             try {
                 const token = req.headers["authorization"];
                 const decode = await JWT.check(token);
-                await User.findById(decode.data._id).then(async (user) => {
-                    res.send({ user: user });
-                });
+                if (decode.data._id) {
+                    await User.findById(decode.data._id).then(async (user) => {
+                        res.status(200).send({ user: user });
+                    });
+                } else {
+                    res.status(401).send({
+                        decode_false: "Decode FALSE",
+                    });
+                }
             } catch (error) {
                 res.status(500).json({ error: error.message }); // Xử lý lỗi nếu có
             }
@@ -81,6 +89,7 @@ class login {
                             password: hash,
                         });
                         const savedUser = await newUser.save();
+                        console.log(savedUser);
                         res.send(newUser);
                     },
                 );
@@ -128,7 +137,7 @@ class login {
                                 newUser,
                                 { new: true },
                             );
-                            res.send(updatedUser);
+                            res.status(200).send(updatedUser);
                         },
                     );
                 });
