@@ -116,8 +116,26 @@ class movies {
     async createNewMovie(req, res, next) {
         // Lấy dữ liệu từ MongoDB bằng async/await
         try {
-            const Movie = await Movies.create(req.body);
-            res.status(200).send(Movie);
+            await Movies.find({ title: req.body.title })
+                .then(async (detail) => {
+                    var movie = mutipleMongooseToObjest(detail);
+                    if (movie[0]) {
+                        res.status(500).json({ error: "Add false" });
+                    } else if (
+                        req.body.backdrop_path &&
+                        req.body.genre_ids &&
+                        req.body.original_title &&
+                        req.body.poster_path &&
+                        req.body.overview &&
+                        req.body.title
+                    ) {
+                        const Movie = await Movies.create(req.body);
+                        res.status(200).send({ movie: Movie });
+                    } else {
+                        res.status(500).json({ error: "Error value input" });
+                    }
+                })
+                .catch(next); // Sử dụng phương thức find() để lấy tất cả tài liệu từ collection Users
         } catch (error) {
             res.status(500).json({ error: error.message }); // Xử lý lỗi nếu có
         }
@@ -131,7 +149,7 @@ class movies {
                     req.body,
                     { new: true },
                 );
-                res.send(updatedMovie);
+                res.status(200).send({ movie: updatedMovie });
             } catch (error) {
                 res.status(500).json({ error: error.message }); // Xử lý lỗi nếu có
             }
