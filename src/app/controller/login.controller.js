@@ -12,27 +12,35 @@ class login {
                 await User.find({
                     email: req.body.email,
                 }).then((user) => {
-                    bcrypt.compare(
-                        req.body.password + user[0].salt,
-                        user[0].password,
-                        async (err, result) => {
-                            if (err) {
-                                console.error(
-                                    "Error comparing passwords:",
-                                    err,
-                                );
-                                return;
-                            }
-                            if (result) {
-                                var _token = await JWT.make(user[0]);
-                                res.status(200).send({ token_login: _token });
-                            } else {
-                                res.status(401).send({
-                                    login_false: "Password does not match",
-                                });
-                            }
-                        },
-                    );
+                    if (user[0]) {
+                        bcrypt.compare(
+                            req.body.password + user[0].salt,
+                            user[0].password,
+                            async (err, result) => {
+                                if (err) {
+                                    console.error(
+                                        "Error comparing passwords:",
+                                        err,
+                                    );
+                                    return;
+                                }
+                                if (result) {
+                                    var _token = await JWT.make(user[0]);
+                                    res.status(200).send({
+                                        token_login: _token,
+                                    });
+                                } else {
+                                    res.status(401).send({
+                                        login_false: "Password does not match",
+                                    });
+                                }
+                            },
+                        );
+                    } else {
+                        res.status(401).send({
+                            login_false: "Email does not match",
+                        });
+                    }
                     // res.send(user);
                 });
             } catch (error) {
@@ -70,60 +78,67 @@ class login {
         // Lấy dữ liệu từ MongoDB bằng async/await
         async function fetchData() {
             try {
-                const salt = crypto.randomBytes(5).toString("hex");
+                if (req.body.name && req.body.email && req.body.password) {
+                    const salt = crypto.randomBytes(5).toString("hex");
 
-                // Số vòng lặp để tăng độ phức tạp của quá trình hash (càng cao càng tốn thời gian)
-                const saltRounds = 10;
+                    // Số vòng lặp để tăng độ phức tạp của quá trình hash (càng cao càng tốn thời gian)
+                    const saltRounds = 10;
 
-                bcrypt.hash(
-                    req.body.password + salt,
-                    saltRounds,
-                    async (err, hash) => {
-                        if (err) {
-                            console.error("Error hashing password");
-                            res.status(401).send({
-                                register_status: "Error comparing passwords",
-                            });
-                        } else {
-                            await User.find({
-                                email: req.body.email,
-                            }).then(async (user) => {
-                                if (!user[0]) {
-                                    const newUser = new User({
-                                        salt: salt,
-                                        ...req.body,
-                                        password: hash,
-                                    });
-                                    const savedUser = await newUser.save();
-                                    console.log(savedUser);
-                                    res.status(200).send(newUser);
-                                } else {
-                                    bcrypt.compare(
-                                        req.body.password + user[0].salt,
-                                        user[0].password,
-                                        async (err, result) => {
-                                            if (err) {
-                                                console.error(
-                                                    "Error comparing passwords:",
-                                                    err,
-                                                );
-                                                res.status(401).send({
-                                                    register_status:
-                                                        "Error comparing passwords",
-                                                });
-                                            } else {
-                                                res.status(401).send({
-                                                    register_status:
-                                                        "Register False",
-                                                });
-                                            }
-                                        },
-                                    );
-                                }
-                            });
-                        }
-                    },
-                );
+                    bcrypt.hash(
+                        req.body.password + salt,
+                        saltRounds,
+                        async (err, hash) => {
+                            if (err) {
+                                console.error("Error hashing password");
+                                res.status(401).send({
+                                    register_status:
+                                        "Error comparing passwords",
+                                });
+                            } else {
+                                await User.find({
+                                    email: req.body.email,
+                                }).then(async (user) => {
+                                    if (!user[0]) {
+                                        const newUser = new User({
+                                            salt: salt,
+                                            ...req.body,
+                                            password: hash,
+                                        });
+                                        const savedUser = await newUser.save();
+                                        console.log(savedUser);
+                                        res.status(200).send(newUser);
+                                    } else {
+                                        bcrypt.compare(
+                                            req.body.password + user[0].salt,
+                                            user[0].password,
+                                            async (err, result) => {
+                                                if (err) {
+                                                    console.error(
+                                                        "Error comparing passwords:",
+                                                        err,
+                                                    );
+                                                    res.status(401).send({
+                                                        register_status:
+                                                            "Error comparing passwords",
+                                                    });
+                                                } else {
+                                                    res.status(401).send({
+                                                        register_status:
+                                                            "Register False",
+                                                    });
+                                                }
+                                            },
+                                        );
+                                    }
+                                });
+                            }
+                        },
+                    );
+                } else {
+                    res.status(404).json({
+                        error: "Missing information entered",
+                    });
+                }
             } catch (error) {
                 res.status(500).json({ error: error.message }); // Xử lý lỗi nếu có
             }
