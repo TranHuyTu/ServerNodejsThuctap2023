@@ -1,18 +1,19 @@
-const Products = require("../module/Product");
+const InfoTickers = require("../module/InfoTicker");
 const {
   MongooseToObject,
   mutipleMongooseToObjest,
 } = require("../../util/mongoose");
 const mongoose = require("mongoose");
-class Product {
-  productAll(req, res, next) {
+
+class InfoTicker {
+  InfoTickerAll(req, res, next) {
     // Lấy dữ liệu từ MongoDB bằng async/await
     async function fetchData() {
       try {
-        await Products.find({})
-          .then((Products) => {
-            Products = Products.map((item) => item.toObject());
-            res.send({ Products });
+        await InfoTickers.find({})
+          .then((InfoTickers) => {
+            InfoTickers = InfoTickers.map((item) => item.toObject());
+            res.send({ InfoTickers });
           })
           .catch(next); // Sử dụng phương thức find() để lấy tất cả tài liệu từ collection Users
       } catch (error) {
@@ -23,14 +24,14 @@ class Product {
     // Gọi hàm để thực hiện lấy dữ liệu
     fetchData();
   }
-  productByUser(req, res, next) {
+  InfoTickerByTicker(req, res, next) {
     // Lấy dữ liệu từ MongoDB bằng async/await
     async function fetchData() {
       try {
-        await Products.find({ user_id: req.params.id })
-          .then((Products) => {
-            Products = mutipleMongooseToObjest(Products);
-            res.status(200).send({ Products });
+        await InfoTickers.find({ ticker_id: req.params.id })
+          .then((InfoTickers) => {
+            InfoTickers = InfoTickers.map((item) => item.toObject());
+            res.send({ InfoTickers });
           })
           .catch(next); // Sử dụng phương thức find() để lấy tất cả tài liệu từ collection Users
       } catch (error) {
@@ -41,25 +42,39 @@ class Product {
     // Gọi hàm để thực hiện lấy dữ liệu
     fetchData();
   }
-  async createNewProduct(req, res, next) {
+
+  async createNewInfoTicker(req, res, next) {
     // Lấy dữ liệu từ MongoDB bằng async/await
     try {
-      const Product = await Products.create(req.body);
-      res.status(200).send(Product);
+      await InfoTickers.find({ title: req.body.title })
+        .then(async (InfoTicker) => {
+          InfoTicker = mutipleMongooseToObjest(InfoTicker);
+          if (InfoTicker.length == 0) {
+            const newInfoTicker = new InfoTickers({
+              ...req.body,
+            });
+            const savedInfoTicker = await newInfoTicker.save();
+            res.status(200).send(newInfoTicker);
+          } else {
+            res.status(404).send({ Error: "Create False" });
+          }
+        })
+        .catch(next);
     } catch (error) {
-      res.status(500).json({ error: error.message }); // Xử lý lỗi nếu có
+      res.status(500).json({ Error: "Create False" }); // Xử lý lỗi nếu có
     }
   }
-  updateOneProductById(req, res, next) {
+
+  updateOneInfoTickerById(req, res, next) {
     // Lấy dữ liệu từ MongoDB bằng async/await
     async function fetchData() {
       try {
-        const updatedProduct = await Products.findByIdAndUpdate(
+        const updatedInfoTicker = await InfoTickers.findByIdAndUpdate(
           req.params.id,
           req.body,
           { new: true }
         );
-        res.send(updatedProduct);
+        res.send(updatedInfoTicker);
       } catch (error) {
         res.status(500).json({ error: error.message }); // Xử lý lỗi nếu có
       }
@@ -68,11 +83,11 @@ class Product {
     // Gọi hàm để thực hiện lấy dữ liệu
     fetchData();
   }
-  deleteOneProductById(req, res, next) {
+  deleteOneInfoTickerById(req, res, next) {
     // Lấy dữ liệu từ MongoDB bằng async/await
     async function fetchData() {
       try {
-        const result = await Products.deleteOne({
+        const result = await InfoTickers.deleteOne({
           _id: mongoose.Types.ObjectId.createFromHexString(req.params.id),
         });
         if (result.deletedCount === 1) {
@@ -94,4 +109,4 @@ class Product {
   }
 }
 
-module.exports = new Product();
+module.exports = new InfoTicker();
