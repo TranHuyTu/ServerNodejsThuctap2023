@@ -10,12 +10,13 @@ const Ticker = new Schema(
       unique: true,
     },
     companyName: {
-      type: String,
+      type: Array,
       required: true,
+      unique: true,
     },
     //ngành
     industry: {
-      type: String,
+      type: Array,
       required: true,
     },
     //giá
@@ -48,6 +49,36 @@ const Ticker = new Schema(
       type: String,
       required: true,
     },
+    // Trạng thái: Công ty đang hoạt động
+    status: {
+      type: String,
+      required: true,
+    },
+
+    // Mã số thuế: 0400100707
+    tax_id: {
+      type: Number,
+      required: true,
+    },
+    // GPTL:Ngày cấp: 13/02/1995
+    GPTL: {
+      type: Number,
+    },
+    dateGPTL: {
+      type: Date,
+      required: true,
+    },
+
+    // GPKD: 0400100707 Ngày cấp: 22/12/2014
+    GPKD: {
+      type: Number,
+      required: true,
+    },
+    dateGPKD: {
+      type: Date,
+      required: true,
+    },
+
     //Thông tin chi tiết doanh nghiệp
     details: {
       type: String,
